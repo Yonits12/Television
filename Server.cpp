@@ -16,13 +16,11 @@
 
 using namespace std;
 
+
 // Establish a control connection with a new user
 void welcomeUser(int sock_id)
 {
 	std::cout << "Inside welcomeUser for user "<< sock_id << " !!!\n";
-    
-    //print menu
-
 
     // get choosen option    
     int rec_bytes = -1, choice = 0;

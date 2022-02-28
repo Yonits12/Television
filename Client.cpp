@@ -8,9 +8,23 @@
 #include <vector>
 #include <iostream>
 
+#include "AsciiFlixDefinitions.h"
+
 #define PORT 8080
 
 using namespace std;
+
+// Menu printing
+void printMenu()
+{
+	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~" << "\n";
+	cout << "Please enter your choice:" << "\n";
+	cout << "1. Change Movie" << "\n";
+	cout << "2. Ask For Premium" << "\n";
+	cout << "3. Return To Watch" << "\n";
+	cout << "4. Quit Program" << "\n";
+	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~" << "\n";
+}
 
 bool intToBytes(int paramInt, char* o_int_bytes)
 {
@@ -50,14 +64,24 @@ int main(int argc, char const *argv[])
 		printf("\nConnection Failed \n");
 		return -1;
 	}
+
+	// Print menu
+	printMenu();
+
+	// Reiceve option
     char option_bytes[4] = {0};
-    if (!intToBytes(7, option_bytes))
+    int chosen_option{};
+	cin >> chosen_option;
+	CHECK_RET(chosen_option <= 4 && chosen_option >= 1, "Invalid option, Aborted.");
+
+	if (!intToBytes(chosen_option, option_bytes))
     {
         printf("\nConvertion Failed \n");
 		return -1;
     }
 	send(sock , option_bytes, 4 , 0);
-	printf("Hello message sent\n");
+	
+	// printf("Hello message sent\n");
 	valread = read( sock , buffer, 1024);
 	printf("%s\n",buffer );
 	return 0;
