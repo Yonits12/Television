@@ -27,7 +27,7 @@ bool Movie::getCurrentFrame(string &o_lined_frame) const
 	o_lined_frame = "";
 	for(int i=0; i<5; ++i)
 	{
-		o_lined_frame.append(this->frame[i]);
+		o_lined_frame.append(this->m_frame[i]);
 		o_lined_frame.append("\n");
 	}
 	return true;
@@ -35,10 +35,10 @@ bool Movie::getCurrentFrame(string &o_lined_frame) const
 
 int streamToUser(int bcaster_fd, sockaddr_in user_socket)
 {
+    fstream stream;
     cout << "Yoni is the Coder\n";
     Movie mv{};
-    fstream stream;
-    stream.open(mv.path, ios::in);
+    stream.open(mv.m_path, ios::in);
     string line;
     getline(stream, line);
     
@@ -49,11 +49,10 @@ int streamToUser(int bcaster_fd, sockaddr_in user_socket)
             for(int i=0; i<5; ++i)
             {
                 getline(stream, line);
-                mv.frame[i] = line;
-                cout << mv.frame[i] << "\n";
-
+                mv.m_frame[i] = line;
+                cout << mv.m_frame[i] << "\n";
             }
-			// sendto(bcaster_fd, mv.frame[i].c_str(), mv.frame[i].length(),
+			// sendto(bcaster_fd, mv.m_frame[i].c_str(), mv.m_frame[i].length(),
 			// 	MSG_CONFIRM, (const struct sockaddr *) &user_socket, 
 			// 		sizeof(user_socket));
             usleep(100000);

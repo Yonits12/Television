@@ -15,8 +15,8 @@ class Movie
         bool getCurrentFrame(string &o_lined_frame) const;
 
     public:
-        const char* path = "/home/yonits/Documents/trepointer/Television/someText.txt";
-        string frame[5];
+        const char* m_path = "/home/yonits/Documents/trepointer/Television/someText.txt";
+        string m_frame[5];
 };
 
 #endif // SERVER_H

@@ -6,11 +6,4 @@
 
 using namespace std;
 
-class Movie
-{
-    public:
-        const char* path = "/home/yonits/Documents/trepointer/someText.txt";
-        string frame[5];
-};
-
 #endif // CLIENT_H
