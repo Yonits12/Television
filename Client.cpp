@@ -11,6 +11,7 @@
 #include "AsciiFlixDefinitions.h"
 
 #define PORT 8080
+#define MOVIE_PORT 7070
 
 using namespace std;
 
@@ -65,25 +66,67 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
-	// Print menu
-	printMenu();
+	while (1)
+	{
+		// Print menu
+		printMenu();
 
-	// Reiceve option
-    char option_bytes[4] = {0};
-    int chosen_option{};
-	cin >> chosen_option;
-	CHECK_RET(chosen_option <= 4 && chosen_option >= 1, "Invalid option, Aborted.");
+		// Reiceve option
+		char option_bytes[4] = {0};
+		int chosen_option{};
+		cin >> chosen_option;
+		CHECK_RET(chosen_option <= 4 && chosen_option >= 1, "Invalid option, Aborted.");
 
-	if (!intToBytes(chosen_option, option_bytes))
-    {
-        printf("\nConvertion Failed \n");
-		return -1;
-    }
-	send(sock , option_bytes, 4 , 0);
-	
-	// printf("Hello message sent\n");
-	valread = read( sock , buffer, 1024);
-	printf("%s\n",buffer );
+		// Serial and send to server
+		if (!intToBytes(chosen_option, option_bytes))	
+		{
+			printf("\nConvertion Failed \n");
+			return -1;
+		}
+		send(sock , option_bytes, 4 , 0);
+
+
+		int client_movie_fd;
+		struct sockaddr_in address_movie;
+		char buffer_movie[1024] = {0};
+
+		if ((client_movie_fd = socket(AF_INET, SOCK_DGRAM, 0)) == 0)
+		{
+			perror("UDP socket failed");
+			exit(EXIT_FAILURE);
+		}
+		
+		// // Forcefully attaching socket to the port 7070
+		// if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
+		// 											&opt, sizeof(opt)))
+		// {
+		// 	perror("setsockopt");
+		// 	exit(EXIT_FAILURE);
+		// }
+		address_movie.sin_family = AF_INET;
+		address_movie.sin_addr.s_addr = INADDR_ANY;
+		address_movie.sin_port = htons(MOVIE_PORT);
+		
+		// Forcefully attaching socket to the port 7070
+		if (bind(client_movie_fd, (struct sockaddr *)&address_movie,
+									sizeof(address_movie))<0)
+		{
+			perror("bind failed");
+			exit(EXIT_FAILURE);
+		}
+
+		unsigned int len, n;
+   
+		len = sizeof(address_movie);  //len is value/resuslt
+
+		printf("Now recieving data from Client...\n");
+		n = recvfrom(client_movie_fd, (char *)buffer_movie, 1024, 
+					MSG_WAITALL, ( struct sockaddr *) &address_movie, static_cast<socklen_t*>(&len));
+		buffer_movie[n] = '\0';
+		printf(" Got %d bytes; Server sent: %s\n", n, buffer_movie);
+
+	}
+
 	return 0;
 }
 
