@@ -120,49 +120,17 @@ int main(int argc, char const *argv[])
 		len = sizeof(address_movie);  //len is value/resuslt
 
 		printf("Now recieving data from Client...\n");
-		n = recvfrom(client_movie_fd, (char *)buffer_movie, 1024, 
-					MSG_WAITALL, ( struct sockaddr *) &address_movie, static_cast<socklen_t*>(&len));
-		buffer_movie[n] = '\0';
-		printf(" Got %d bytes; Server sent: %s\n", n, buffer_movie);
+		while(1)
+		{
+			n = recvfrom(client_movie_fd, (char *)buffer_movie, 1024, 
+						MSG_WAITALL, ( struct sockaddr *) &address_movie, static_cast<socklen_t*>(&len));
+			buffer_movie[n] = '\0';
+			printf("%s", buffer_movie);
+			usleep(300000);
+			system("clear");
+		}
 
 	}
 
 	return 0;
 }
-
-
-// #include "Client.h"
-// #include <iostream>
-// #include <unistd.h>
-
-// using namespace std;
-
-// int main()
-// {
-//     cout << "Yoni is the Coder\n";
-//     Movie mv{};
-//     fstream stream;
-//     stream.open(mv.path, ios::in);
-//     string line;
-//     getline(stream, line);
-    
-//     while(line != ";;;")
-//     {
-//         if(stream.is_open())
-//         {
-//             for(int i=0; i<5; ++i)
-//             {
-//                 getline(stream, line);
-//                 mv.frame[i] = line;
-//                 cout << mv.frame[i] << "\n";
-//             }
-//             usleep(200000);
-//             system("clear");
-//             getline(stream, line);
-//         }
-//     }
-    
-    
-//     stream.close();
-//     return 0;
-// }

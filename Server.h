@@ -8,10 +8,15 @@ using namespace std;
 
 class Movie
 {
+    /*                  Ideas to the future:     
+        A movie file will enumerate each frame -> user can stop
+        and slide within the movie.
 
+        Movie class has to manage the current place in the movie.
+    */
     public:
         const char* getPath() const;
-
+        bool hasMoreFrames() const;
         bool getCurrentFrame(string &o_lined_frame) const;
 
     public:

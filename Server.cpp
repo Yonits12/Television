@@ -9,11 +9,9 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <cstring>
-#include <string>
 #include <thread>
 #include <iostream>
 #include <arpa/inet.h>
-#include <netinet/in.h>
 
 
 #define CONTROL_PORT 8080
@@ -21,6 +19,15 @@
 
 using namespace std;
 
+bool Movie::hasMoreFrames() const
+{
+	fstream stream;
+	stream.open(this->m_path, ios::in);
+	string line;
+    getline(stream, line);
+
+	return true;
+}
 
 bool Movie::getCurrentFrame(string &o_lined_frame) const
 {
@@ -41,22 +48,27 @@ int streamToUser(int bcaster_fd, sockaddr_in user_socket)
     stream.open(mv.m_path, ios::in);
     string line;
     getline(stream, line);
+	string curr_frame;
     
     while(line != ";;;")
     {
         if(stream.is_open())
         {
+			// Fill a movie object from file
             for(int i=0; i<5; ++i)
             {
                 getline(stream, line);
                 mv.m_frame[i] = line;
                 cout << mv.m_frame[i] << "\n";
             }
-			// sendto(bcaster_fd, mv.m_frame[i].c_str(), mv.m_frame[i].length(),
-			// 	MSG_CONFIRM, (const struct sockaddr *) &user_socket, 
-			// 		sizeof(user_socket));
-            usleep(100000);
-            system("clear");
+
+			// Get the whole frame and stream it
+			mv.getCurrentFrame(curr_frame);
+			sendto(bcaster_fd, curr_frame.c_str(), curr_frame.length(),
+				MSG_CONFIRM, (const struct sockaddr *) &user_socket, 
+					sizeof(user_socket));
+            
+			usleep(200000);
             getline(stream, line);
         }
     }
